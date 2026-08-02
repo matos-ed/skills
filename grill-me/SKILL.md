@@ -4,4 +4,6 @@ description: A relentless interview to sharpen a plan or design.
 disable-model-invocation: true
 ---
 
+<!-- Adapted from mattpocock/skills: https://github.com/mattpocock/skills/tree/main/skills/productivity/grill-me -->
+
 Run a `/grilling` session.

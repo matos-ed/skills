@@ -4,6 +4,8 @@ description: Plan a huge chunk of work — more than one agent session can hold 
 disable-model-invocation: true
 ---
 
+<!-- Adapted from mattpocock/skills: https://github.com/mattpocock/skills/tree/main/skills/engineering/wayfinder -->
+
 A loose idea has arrived — too big for one agent session, and wrapped in fog: the way from here to the **destination** isn't visible yet. Wayfinding is about finding that way, not charging at the destination. This skill charts the way as a **shared map** on the repo's issue tracker, then works its tickets one at a time until the route is clear.
 
 The destination varies per effort, and naming it is the first act of charting — it shapes every ticket. It might be a spec to hand off and iterate on, a decision to lock before planning starts, or a change made in place like a data-structure migration. The map is domain-agnostic — engineering work, course content, whatever fits the shape.

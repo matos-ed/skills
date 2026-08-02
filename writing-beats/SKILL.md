@@ -4,6 +4,8 @@ description: Writing, exploit — assemble raw material into a journey of beats,
 disable-model-invocation: true
 ---
 
+<!-- Adapted from mattpocock/skills: https://github.com/mattpocock/skills/tree/main/skills/in-progress/writing-beats -->
+
 <what-to-do>
 
 The user has passed (or will pass) a markdown file of raw material. This is **exploit**: the exploring is done, the pile is fixed — commit to a path through it and mine the pile to fill each beat.

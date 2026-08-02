@@ -4,6 +4,8 @@ description: Writing, explore — mine raw fragments, no structure yet.
 disable-model-invocation: true
 ---
 
+<!-- Adapted from mattpocock/skills: https://github.com/mattpocock/skills/tree/main/skills/in-progress/writing-fragments -->
+
 <what-to-do>
 
 This is pure **explore**: widen the space of what could be written without committing to structure — committing is _exploit_, a separate skill's job. Run a grilling session that produces fragments, interviewing the user relentlessly about whatever they want to write about. Imposing phases, outlines, or article structure is out of scope here.
@@ -50,15 +52,18 @@ It can be multiple paragraphs. It can include lists, code, quotes — whatever
 shape the fragment naturally takes.
 
 ---
+---
 
 A second fragment.
 
+---
 ---
 
 > A quoted line that the user wants to keep around.
 
 A reaction to it.
 
+---
 ---
 
 - A cluster of related observations
