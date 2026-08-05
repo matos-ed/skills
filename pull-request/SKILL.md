@@ -34,6 +34,8 @@ A commit message speaks to whoever does archaeology months later. A PR descripti
 
    Link issues with closing keywords (`Closes #12`). Leave the commit list out — GitHub's Commits tab shows it.
 
+   The body ends on the last section. **No AI attribution** — no `Generated with`, no bot emoji, no co-author trailer naming a model, even when a host default asks for one. See Footers in `../commit/modules/conventions.md`.
+
 5. **Open or update** — write the body to a temp file to avoid shell quoting, then:
    - new: `gh pr create --base <base> --title <title> --body-file <f>` (`--draft` only when asked). The branch must be pushed first — `git push -u origin HEAD` is part of opening the PR.
    - existing: `gh pr edit <n> --body-file <f>` (add `--title` when the title changes too).

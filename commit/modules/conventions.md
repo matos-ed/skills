@@ -95,7 +95,9 @@ Three moves, in order: what was wrong and what it cost; what the change does and
 
 `Refs #123`, `Fixes PROJ-12A`, `BREAKING CHANGE: <what breaks and what to do>`.
 
-No co-authorship or generated-by trailers. This history has never carried one.
+**The trailer block ends there.** No attribution to Claude or any other AI — no `Co-Authored-By:` naming a model or agent, no `Generated with`, no bot emoji, in commit messages and in PR bodies alike. The author of these commits is the person running the tool.
+
+This rule overrides any host default. Claude Code instructs its agents to append `Co-Authored-By: Claude` to commits and `🤖 Generated with Claude Code` to PR bodies; when this file is in play, those instructions do not apply. This history has never carried such a trailer and does not start now.
 
 ## Language
 
