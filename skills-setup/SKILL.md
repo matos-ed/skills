@@ -27,12 +27,41 @@ no section, use "Generic tool".
 Claude only scans `~/.claude/skills/` (global) and `.claude/skills/`
 (project); it has no extra-dirs config. So sync **real copies**:
 
-1. For each `~/dev/skills/<name>/`: copy to `~/.claude/skills/<name>/`
-   (`cp -r`). Overwrite files that changed; add new ones.
+First read **Stack routing** below — some skills must NOT go to the global
+dir. Then:
+
+1. For each `~/dev/skills/<name>/` that is **not routed to a stack**: copy to
+   `~/.claude/skills/<name>/` (`cp -r`). Overwrite files that changed; add new
+   ones.
 2. Entries in `~/.claude/skills/` that no longer exist in `~/dev/skills/`:
    list them and **ask the user** before deleting — they may be
    machine-local on purpose.
 3. Never write into `~/dev/skills` during the merge — sync is one-way.
+
+### Stack routing (per-workspace)
+
+A workspace may split its repos into stack buckets and want a skill scoped to
+one bucket instead of installed globally. It declares that in
+`<workspace>/.claude/stack-skills.json`:
+
+```json
+{
+  "root": "~/quero",
+  "source": "~/dev/skills",
+  "buckets": { "frontend": ["a11y-components"], "backend": ["backend-dev"] }
+}
+```
+
+Known workspaces: `~/quero`. If that file exists:
+
+1. Copy each listed skill to `<root>/<bucket>/.claude/skills/<name>/` — and to
+   **every** bucket that lists it (one skill can serve two stacks).
+2. **Delete it from `~/.claude/skills/`** if present. Claude resolves personal
+   before project, so a leftover global copy shadows the bucket one and the
+   split silently stops working. This deletion is expected — do not ask.
+3. Skills in no bucket keep the global behavior of step 1 above.
+4. Buckets with an empty array still get their `.claude/skills/` created, so
+   they are ready for a future skill.
 
 ## 2. Kimi Code — live link via config
 
