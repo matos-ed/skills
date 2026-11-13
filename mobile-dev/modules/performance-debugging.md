@@ -47,4 +47,5 @@ Keep the app smooth, find the cause of jank, and verify before shipping. Apply d
 [ ] No needless re-renders (narrow selectors, stable props, memo where it pays)
 [ ] Listeners/timers/requests cleaned up on unmount
 [ ] Verified via `npx expo start` (or a release dev build for perf); visuals handed to rn-ui-builder
+[ ] Runtime change verified on Android and iOS (modules/automated-local-tests.md) — or the skip is stated with its reason
 ```

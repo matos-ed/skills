@@ -1,27 +1,42 @@
 ---
 name: mobile-dev
-description: Verify and measure mobile apps (React Native, Android and iOS) on emulators, simulators and real devices — automated local smoke tests with Maestro on a release build of the branch, cold-start A/B against the base build, and real battery drain per uid via ADB. Use before reporting a mobile change as done or opening its PR, when asked to "testa no android/ios", "roda o smoke", "valida a branch no emulador", or to compare battery or startup between two builds.
+description: Engineer, verify and measure React Native (Expo) apps on Android and iOS — project structure, navigation, state, data fetching, native/Expo capabilities, permissions, performance and EAS builds/release; then automated local tests with Maestro on a release build of the branch, cold-start A/B against the base, and real battery drain per uid via ADB. Use to build or change a mobile feature, integrate a native capability, fix performance or prepare a release, before reporting a mobile change done or opening its PR, or when asked to "testa no android/ios", "roda o smoke", "valida a branch no emulador", or compare battery or startup between two builds. Defers visual design to rn-ui-designer and styled markup to rn-ui-builder.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-argument-hint: "[app/repo, branch or PR, what to verify or measure]"
+argument-hint: "[app/repo, feature, native integration, perf issue, release, branch/PR to verify or what to measure]"
 ---
 
 # Mobile Dev
 
-Proves a mobile change works and measures what it costs, on the platforms the user actually runs. Engineering of the app itself (structure, navigation, state, native modules, release) is `react-native-dev`; visuals are `rn-ui-designer` / `rn-ui-builder`.
+Builds the **engineering** of React Native (Expo) apps — structure, navigation, state, data fetching, native capabilities, performance and release — and proves each change on the platforms the user actually runs. Owns everything below the visual surface; hands styling to `rn-ui-designer` / `rn-ui-builder`.
 
 ## When to Use
-- A change with runtime effect in a mobile app is about to be reported done or go to PR
-- Validating a branch, PR or release build on Android and iOS
+- Scaffold an app or add a feature/screen's logic
+- Navigation, state, data fetching, persistence or typed API wiring
+- Integrating a native/Expo capability (camera, notifications, permissions, config plugins)
+- Fixing performance (slow lists, re-renders, memory) or preparing an EAS build/release
+- A change with runtime effect is about to be reported done or go to PR: verify it on Android and iOS
 - Comparing two builds (cold start, battery) or finding what drains an app
 
 ## Do Not Use When
-- Component/hook tests with Testing Library + MSW only (that's the repo's unit suite; see `local-testing` → `frontend-mobile.md`)
-- The change has no runtime effect (docs, CI, comments): say it was skipped and why
+- Visual design (use `rn-ui-designer`) or styled markup (use `rn-ui-builder`)
+- Backend/API server code (use `backend-dev`)
+- Non-React-Native apps
+- Only component/hook tests with Testing Library + MSW (the repo's unit suite; see `local-testing` → `frontend-mobile.md`)
 
 ## Organization notes
-App-specific details (bundle ids, dev menus, stage environment, test coordinates, build schemes, ready-made flows) live in `local/`, which is git-ignored. Read `local/` first when it exists; when a run teaches something app-specific, write it there, and keep the tracked modules generic.
+App-specific details (bundle ids, dev menus, stage environment, test coordinates, build schemes, ready-made flows, team conventions) live in `local/`, which is git-ignored. Read `local/` first when it exists; when a task teaches something app-specific, write it there, and keep the tracked modules generic.
 
 ## Workflows
+
+**Engineering**
+1. **Orient** — classify the task (scaffold, feature, native integration, perf/bug, release). Detect the project's Expo SDK, router and state lib first; match existing conventions. Defer visuals to `rn-ui-designer`/`rn-ui-builder`.
+2. **Architecture & data** — structure, navigation, state, data fetching, typed boundaries → `modules/architecture-state.md`
+3. **Native & platform** — Expo/native APIs, permissions, platform code, config plugins, EAS builds → `modules/native-platform.md` (only when the task touches native capability or release)
+4. **Performance & debugging** — lists, re-renders, memory, profiling, release readiness → `modules/performance-debugging.md`
+5. **Self-check** — score against the checklist ending `modules/performance-debugging.md`; fix every P0/P1.
+6. **Verify on device (mandatory for runtime changes)** — run the automated local tests below. Never report a mobile change as done or open its PR without it, unless it has no runtime effect; then say it was skipped and why.
+
+Worked patterns and snippets: `modules/examples.md`.
 
 **Automated local tests** → `modules/automated-local-tests.md`
 1. Build the branch (and the base, for A/B) as release builds in worktrees, guarding disk.
@@ -41,8 +56,20 @@ Battery non-negotiables: never on an emulator (values are synthetic — say so a
 
 ## Rules that don't change
 - Nothing points at production: dev/stage builds and stage data only. Production accounts and OTA channels are off limits unless the user says otherwise.
-- Never print secrets from `.env*`, `.npmrc` or signing configs; read a needed value straight into a variable.
+- Never ship secrets in the JS bundle, and never print secrets from `.env*`, `.npmrc` or signing configs; read a needed value straight into a variable.
 - Emulator timings are trends, not production numbers — say so in the report.
 - Leave the machine as you found it: remove worktrees and build outputs, shut down emulators and simulators, report free disk.
+
+## Output Format (engineering tasks)
+
+```markdown
+# Mobile Dev — [task]
+## Files — path (new|edited)
+## What changed — structure / navigation / state / data / native, as applicable
+## Decisions — libs chosen + why; platform/permission notes
+## Self-check — P0/P1 found & fixed
+## Device verification — Android/iOS table from automated-local-tests (or skip + reason)
+## Handoff — visuals → rn-ui-designer/builder; open questions
+```
 
 User request: $ARGUMENTS
