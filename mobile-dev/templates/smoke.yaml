@@ -1,0 +1,97 @@
+# Generic React Native smoke flow for Maestro. Replace every <...> and drop the
+# blocks your app doesn't need. App-specific versions live in the skill's local/.
+appId: <bundle id or package>
+---
+- setLocation:
+    latitude: <lat>
+    longitude: <lon>
+- launchApp:
+    clearState: true
+    permissions:
+      location: always        # iOS accepts always | inuse | never
+      notifications: allow
+# iOS App Tracking Transparency can show up at launch or a few screens later.
+- tapOn:
+    text: Ask App Not to Track
+    optional: true
+
+# --- Reach the environment the build should hit (dev menu, env switch...) ---
+# Elements inside RN modals/bottom sheets are one merged element on iOS:
+# wait for the modal by its text, then tap by position.
+- extendedWaitUntil:
+    visible: "<text inside the env modal>.*"
+    timeout: 15000
+- tapOn:
+    point: "50%,90%"
+- tapOn:
+    text: Ask App Not to Track
+    optional: true
+
+# --- Entry (guest or login) ---
+- extendedWaitUntil:
+    visible: "<entry screen text>.*"
+    timeout: 20000
+- takeScreenshot: 01-entry
+- tapOn: "<continue as guest>.*"
+
+# --- Address / onboarding form ---
+- extendedWaitUntil:
+    visible: "<address screen text>.*"
+    timeout: 30000
+- tapOn:
+    text: "<field label>.*"
+- inputText: teste
+- tapOn:
+    point: "50%,14%"          # leave the field; hideKeyboard is flaky
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn: "<confirm>.*"
+
+# Optional warning sheet: wait for either outcome, then act only if it's there.
+- extendedWaitUntil:
+    visible: "(<warning title>.*|.*<home marker>.*)"
+    timeout: 20000
+- runFlow:
+    when:
+      visible: "<warning title>.*"
+    commands:
+      - tapOn:
+          point: "50%,82%"
+
+# --- Home and a list screen ---
+- extendedWaitUntil:
+    visible: "<home marker>.*"
+    timeout: 45000
+- takeScreenshot: 02-home
+- waitForAnimationToEnd:
+    timeout: 10000
+- swipe:
+    direction: UP
+    duration: 400
+- swipe:
+    direction: DOWN
+    duration: 400
+- takeScreenshot: 02b-home-loaded
+- tapOn: "<list entry>.*"
+- extendedWaitUntil:
+    visible: "<list screen marker>.*"
+    timeout: 30000
+- scroll
+- scroll
+- takeScreenshot: 03-list
+
+# --- Relaunch keeps (or intentionally drops) state ---
+- back:
+    optional: true
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "(<relaunch prompt>.*|<entry screen text>.*)"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "<relaunch prompt>.*"
+    commands:
+      - tapOn:
+          point: "50%,82%"
+- takeScreenshot: 04-relaunch

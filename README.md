@@ -13,6 +13,7 @@ Claude, Kimi, ou o modelo da moda daqui 6 meses — a fonte da verdade é
 <nome-da-skill>/
   SKILL.md    # o cérebro 🧠 (frontmatter + instruções)
   modules/    # os detalhes, lidos só quando precisa 📚
+  local/      # o que é da máquina ou da empresa — ignorado pelo git 🔒
 ```
 
 Plano -> No formato que as ferramentas leem nativamente.

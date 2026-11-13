@@ -9,6 +9,7 @@ Os apps não precisam da infra Docker: os testes de componente simulam a API com
 | Componente, hook, regra de tela | teste de componente com Testing Library + MSW, do arquivo alterado e dos vizinhos |
 | Contrato com o backend mudou | teste com o handler MSW no formato novo, e o app rodando contra o backend local da branch (ver abaixo) |
 | Refatoração visual ou de layout | comparação visual antes/depois com a skill `frontend-refactor` |
+| App rodando de verdade (build release no emulador/simulador, smoke automatizado, cold start) | skill `mobile-dev` → `modules/automated-local-tests.md` |
 | Fluxo crítico de ponta a ponta | suíte E2E central contra STG (repositórios e workflow em `local/`) |
 
 ## Regras comuns dos apps

@@ -1,6 +1,6 @@
 # Reading the Numbers
 
-Read at step 4. **Check the artifacts section before believing any delta.**
+Read at battery step 4. **Check the artifacts section before believing any delta.**
 
 ## Per-uid estimate — the headline
 

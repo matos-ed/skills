@@ -1,6 +1,6 @@
 # Device Setup
 
-Read at step 2.
+Read at battery step 2.
 
 ## 1. Get ADB working without the cable
 

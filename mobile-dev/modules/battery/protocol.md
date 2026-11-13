@@ -1,6 +1,6 @@
 # Running the Windows
 
-Read at step 3.
+Read at battery step 3.
 
 ## The script
 

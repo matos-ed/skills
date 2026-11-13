@@ -20,6 +20,7 @@ Builds and maintains the **engineering** of React Native (Expo) apps — structu
 
 - Visual design (use `rn-ui-designer`) or styled markup (use `rn-ui-builder`)
 - Backend/API server code (use `backend-dev`)
+- Verifying a build on emulator/simulator/device, smoke flows, cold start or battery (use `mobile-dev`)
 - Non-React-Native apps
 
 ## Workflow

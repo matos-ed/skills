@@ -1,6 +1,6 @@
 # Designing the Comparison
 
-Read at step 1. Decide what is being compared before touching the device — most failed battery tests
+Read at battery step 1. Decide what is being compared before touching the device — most failed battery tests
 fail here, not in the measurement.
 
 ## A comparison needs two identical windows

@@ -1,6 +1,6 @@
 # Reporting
 
-Read at step 5. A battery report is read by people deciding whether to spend engineering time. Lead
+Read at battery step 5. A battery report is read by people deciding whether to spend engineering time. Lead
 with what dominates, not with the process.
 
 ## Window validity — classify every window
@@ -32,7 +32,7 @@ List the discarded windows too. A report that only shows successful runs hides h
 
 ## Rules for the numbers
 
-- **Never report a raw delta as a saving without clearing the artifacts** in `modules/analysis.md`.
+- **Never report a raw delta as a saving without clearing the artifacts** in `modules/battery/analysis.md`.
   If an artifact explains it, show the naive reading and then correct it — readers arrive with the
   naive reading already in mind.
 - Quote counters at the precision the tool gives; do not round a 0,036 mAh into "negligible" without
