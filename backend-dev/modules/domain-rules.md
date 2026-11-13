@@ -1,12 +1,6 @@
----
-name: ddd-backend-dev
-description: Regras de DDD para código backend Node/TypeScript da Quero Delivery — entidade rica com as invariantes, service que só orquestra, contrato OpenAPI como primeira barreira, interfaces nomeadas, erros em pt-BR e fallback que não engole falha. Use ao criar ou revisar endpoint, entidade, service ou validação de regra de negócio no backend.
-argument-hint: "[endpoint, entidade ou regra a implementar/revisar]"
----
+# Regras de domínio (DDD) — serviços Quero Delivery
 
-# DDD Backend Dev
-
-Complementa a `backend-dev` (camadas, verificação local). Onde as duas divergem sobre **onde mora a regra de negócio**, vale esta: a regra é da **entidade**, não do service.
+A regra de negócio é da **entidade**, não do service. O service carrega, chama a entidade e persiste.
 
 ## Onde cada validação mora
 
@@ -25,7 +19,6 @@ Uma regra fica em **um** lugar só. Se o contrato já barra, não repita no serv
 - **Nunca valide invariante no construtor.** O construtor reidrata documentos antigos. Um register salvo com data que já passou, ou com CNPJ legado inválido, quebraria na leitura. O construtor só normaliza (`CnpjNormalizer`, telefone).
 - Semântica de PUT: campo opcional ausente no body limpa o valor na entidade (`undefined`), não mantém o antigo. Ex.: trocar CNPJ → CPF zera `cnpj` e `socialName`.
 - Dependência pura (validador, normalizador) pode ser constante de módulo na entidade. Repositório e integração externa nunca entram na entidade.
-
 - Entidade guarda o próprio estado: campos `readonly`, `constructor(params)` que só normaliza e `static restore`. O repositório devolve a entidade, não um objeto plano. Classe só com métodos estáticos que retornam interface não é entidade.
 
 ## Service orquestra
@@ -79,30 +72,3 @@ Antes de escrever um validador ou utilitário, procure nas dependências do repo
 - Um caso por regra, com status **e** `body.message`: sucesso, cada invariante (422), cada ramo do contrato (400), agregado inexistente (404), token sem id e basic auth (401). Inclua as bordas: "hoje" aceito, CNPJ alfanumérico com máscara.
 - Prove o teste: tire a regra e veja ele falhar (mutação manual) antes de confiar.
 - Nome no padrão `qd-integration-tests` (método, rota e status no título).
-
-## Entrega
-
-- **Limite de 500 linhas por PR:** no máximo 500 adições + 500 remoções. Lockfile e lib adicionada não contam.
-  - Meça **antes de abrir o PR** e de novo a cada fix de review: `git diff --shortstat <base>...HEAD -- . ':!yarn.lock' ':!package-lock.json'`.
-  - Se for passar do limite, planeje a divisão antes de codar, não depois: PRs encadeados por base (`stage` ← A ← B), cada um revisável e com sentido sozinho. Commits atômicos (`feat:` + `test:` por fatia) facilitam fatiar.
-  - Informe o tamanho na resposta ao usuário quando abrir ou atualizar o PR.
-- Fatia vertical por subtask: contrato e regra num PR, persistência noutro, quando o ticket já vier dividido assim.
-- Verificação local obrigatória: ver a etapa 6 da `backend-dev`.
-
-## Persistência e integrações
-
-Mongo (defaults, `strict`, `$limit`), Redis e HTTP externo têm armadilhas que já custaram incidente. Leia [modules/persistence-and-integrations.md](modules/persistence-and-integrations.md) ao gravar ou ler um campo novo, criar uma query ou chamar um terceiro.
-
-## Checklist de revisão
-
-Antes de dar por pronto, toda linha deve responder sim:
-- [ ] Cada invariante está num método da entidade, e nenhuma está no construtor nem no service.
-- [ ] O contrato barra forma e condicionais; o service não repete essa checagem.
-- [ ] Assinaturas sem tipo composto inline; interfaces no arquivo do domínio.
-- [ ] Service recebe dependências em campos nomeados via `IParamsCreate*Service`, sem objeto `deps`.
-- [ ] Todo `if` tem chaves.
-- [ ] Imports nomeados (`import { x } from 'lodash'`), sem default import novo.
-- [ ] Mensagens de erro ao usuário em pt-BR.
-- [ ] Todo `catch` com fallback filtra o erro e loga `warn`.
-- [ ] Toda regra tem teste de integração com status e mensagem, e passou na mutação.
-- [ ] O PR tem no máximo 500 adições e 500 remoções (sem lockfile), medido com `git diff --shortstat`.

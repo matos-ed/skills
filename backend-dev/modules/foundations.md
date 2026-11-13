@@ -53,14 +53,25 @@ If a dependency is optional, the service should **still boot without it** and de
 [ ] Dependency rule holds: http → services → infra → datastore, one direction
 [ ] Routers/controllers are thin (validate + delegate only)
 [ ] DB driver / ORM imported ONLY inside infra/repositories
-[ ] Services are framework-free (no req/res, no ORM) and throw domain errors
-[ ] Repository exposes intent-named ops and returns plain records
+[ ] Services are framework-free (no req/res, no ORM), only orchestrate, and throw domain errors
+[ ] Every invariant is in an entity method — none in the constructor or the service
+[ ] Repository exposes intent-named ops and returns the entity (restore), never a live ORM document
+[ ] Service takes named-field dependencies via IParamsCreate*Service, no `deps` object
+[ ] Signatures have no inline composite types; interfaces live in the domain interface file
+[ ] Every `if` has braces; named imports (`import { x } from 'lodash'`), no new default import
 [ ] Input validated at the edge against shared schemas (no drift; one source of truth)
 [ ] Serializers strip secrets via allow-list; no internal field leaks
 [ ] Error taxonomy + single central handler; consistent { error, code } envelope; 500s masked + logged
+[ ] User-facing error messages in pt-BR
+[ ] Every catch with a fallback filters the "not found" error, logs warn, and lets integration failures through
+[ ] Errors the client branches on carry a boolean flag in the body (BusinessErrorWithData), declared in the contract and asserted in the test
+[ ] Every listing query has $limit; new fields declared in schema and projection
 [ ] Config validated & typed at boot; no scattered process.env reads
 [ ] createApp() factory separable from bootstrap; tests target it
 [ ] Optional deps degrade; required deps fail fast
 [ ] Tests cover edge + integration (ephemeral datastore) + pure helpers
+[ ] Every rule has an integration test asserting status and message, and it failed under manual mutation
+[ ] Local verification ran (modules/local-verification.md) — or the skip is stated with its reason
+[ ] PR has at most 500 additions and 500 deletions (no lockfile), measured with git diff --shortstat
 [ ] File/identifier naming consistent with the codebase
 ```
