@@ -44,6 +44,7 @@ If a dependency is optional, the service should **still boot without it** and de
 
 - **Consistent file naming** — pick one convention (e.g. `kebab-case`) and apply it everywhere, including one-module-per-domain-concept in `services/` and `repositories/`.
 - **Name by intent** — `findByEmail`, `saveChart`, `addAuthProvider`; never `doQuery`/`handle`/`process`.
+- **Name compound conditions** (suggestion, not mandatory) — when an `if` combines more than two clauses, move it into a variable whose name states the meaning (`const hasChangedValidatedPhone = isV2 && validatedAt && phone !== previousPhone; if (hasChangedValidatedPhone)`), so the reader gets the intent without decoding the clauses.
 - **Match the existing codebase first** — these are defaults, not a mandate to restyle working code.
 
 ## Self-check (run before reporting)
