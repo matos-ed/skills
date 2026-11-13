@@ -72,7 +72,7 @@ up() {
         kafka_config
         ensure lt-kafka -p $KAFKA_PORT:19093 -v "$LT_HOME/certs:/certs:ro" -v "$LT_HOME/kafka:/cfg:ro" \
           --entrypoint sh apache/kafka:3.9.0 -c \
-          "$KAFKA_BIN/kafka-storage.sh format -t qdlocal00000000000000 -c /cfg/server.properties --ignore-formatted && exec $KAFKA_BIN/kafka-server-start.sh /cfg/server.properties"
+          "$KAFKA_BIN/kafka-storage.sh format -t ltlocal00000000000000 -c /cfg/server.properties --ignore-formatted && exec $KAFKA_BIN/kafka-server-start.sh /cfg/server.properties"
         ;;
       redis) ensure lt-redis -p $REDIS_PORT:6379 redis:7 ;;
       minio)

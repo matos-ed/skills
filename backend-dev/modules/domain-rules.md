@@ -1,4 +1,4 @@
-# Regras de domínio (DDD) — serviços Quero Delivery
+# Regras de domínio (DDD)
 
 A regra de negócio é da **entidade**, não do service. O service carrega, chama a entidade e persiste.
 
@@ -43,7 +43,7 @@ export class PepImportService {
 
 - Campos condicionais usam `oneOf` + `discriminator` (`propertyName` + `mapping`). Cada ramo tem `additionalProperties: false` e lista todas as propriedades. Com `allOf`, o `additionalProperties: false` quebra.
 - Enum do contrato em inglês (`PRESENTIAL|DELIVERY|PICKUP`). Se o valor gravado for outro, a entidade mapeia. Não exponha enum legado em pt no contrato novo.
-- Data sem hora: `format: date`, que chega como string `YYYY-MM-DD`. "Hoje" é `format(new Date(), 'yyyy-MM-dd')` do `@querodelivery/qd-date-helper`, que já usa o fuso `America/Bahia`. Compare strings, nunca `new Date()` cru.
+- Data sem hora: `format: date`, que chega como string `YYYY-MM-DD`. "Hoje" vem da lib de datas da organização, já no fuso da operação (`format(new Date(), 'yyyy-MM-dd')` no fuso certo). Compare strings, nunca `new Date()` cru.
 
 ## Tipos e nomes
 
@@ -65,10 +65,10 @@ export class PepImportService {
 
 ## Reuso antes de helper
 
-Antes de escrever um validador ou utilitário, procure nas dependências do repo e no `@querodelivery/*`: `next-cnpj` (CNPJ numérico e alfanumérico, NTC 2025.001), `qd-date-helper` (datas no fuso certo; toda soma, subtração, início do dia ou formatação de data passa por ele, nunca `getTime()`, `Date.UTC` ou `getMonth()` na mão), `qd-packages` (erros, `HttpClient`, `mongoose`, e texto em `helpers/util.helper.ts`: `removeAccentsAndSpecialCharsPreserveSpaces`, `normalizeString`, `normalizeText`). Só crie um helper se nada cobrir o caso. Se criar, espelhe o comportamento de quem já grava o mesmo dado (ex.: `getDistanceInMeters` espelha o `geolib` do front v1).
+Antes de escrever um validador ou utilitário, procure nas dependências do repo e nos pacotes internos da organização (lista em `local/`). Exemplos do que costuma já existir: validador de CNPJ (numérico e alfanumérico, NTC 2025.001), lib de datas no fuso da operação (toda soma, subtração, início do dia ou formatação de data passa por ela, nunca `getTime()`, `Date.UTC` ou `getMonth()` na mão), pacote compartilhado com erros, cliente HTTP e normalização de texto. Só crie um helper se nada cobrir o caso. Se criar, espelhe o comportamento de quem já grava o mesmo dado (ex.: `getDistanceInMeters` espelha o `geolib` do front v1).
 
 ## Testes (só integração nos serviços)
 
 - Um caso por regra, com status **e** `body.message`: sucesso, cada invariante (422), cada ramo do contrato (400), agregado inexistente (404), token sem id e basic auth (401). Inclua as bordas: "hoje" aceito, CNPJ alfanumérico com máscara.
 - Prove o teste: tire a regra e veja ele falhar (mutação manual) antes de confiar.
-- Nome no padrão `qd-integration-tests` (método, rota e status no título).
+- Nome no padrão de testes de integração do repo (método, rota e status no título).

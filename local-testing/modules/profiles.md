@@ -19,7 +19,7 @@ Frontend e mobile usam o mesmo `profile.md`, sem `profile.env`: ver `modules/fro
 
 1. Leia as variáveis que o código usa (`src/configurations/env-constants.ts` ou equivalente). Liste só os nomes do `.env` real, nunca os valores.
 2. Escreva o `env.template` com valores sintéticos para todas elas: URLs de terceiros em `__STUB__`, Mongo e Kafka locais, segredos `local-*`.
-3. Levante tópicos (`topic:`, `_TOPIC`, `QD-…`), bucket, Redis e outras filas.
+3. Levante tópicos (`topic:`, `_TOPIC`, prefixo de tópicos da organização), bucket, Redis e outras filas.
 4. Descubra a autenticação das rotas (Bearer, Basic, cabeçalhos assinados) a partir do middleware e dos helpers de teste.
 5. Escreva o seed a partir dos mocks de teste, e um cenário para o fluxo principal.
 6. Rode uma vez e anote no `profile.md` o que precisou ser ajustado.
@@ -29,7 +29,7 @@ Frontend e mobile usam o mesmo `profile.md`, sem `profile.env`: ver `modules/fro
 - **Armadilha nova:** uma linha em "Armadilhas", com o sintoma e a correção.
 - **Cenário novo** que valha repetir: salve como `scenario-<fluxo>.mjs` e liste em "Cenários".
 - **Histórico:** uma linha com data, tarefa e resultado (`branch = base`, ou as diferenças).
-- **Regra que vale para vários projetos:** vai para o módulo certo (`backend.md`, `frontend-mobile.md`).
+- **Regra que vale para vários projetos:** vai para o módulo certo (`backend.md`, `frontend-mobile.md`) se for genérica; se citar lib, serviço ou app interno, vai para `local/`.
 - **Fato que não é de teste local** (decisão de produto, onde fica um dado): vai para a memória do Claude, não para o perfil.
 
 ## Memória do Claude

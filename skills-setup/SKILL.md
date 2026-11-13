@@ -46,13 +46,13 @@ one bucket instead of installed globally. It declares that in
 
 ```json
 {
-  "root": "~/quero",
+  "root": "~/work",
   "source": "~/dev/skills",
   "buckets": { "frontend": ["a11y-components"], "backend": ["backend-dev"] }
 }
 ```
 
-Known workspaces: `~/quero`. If that file exists:
+Known workspaces are listed in `skills-setup/local/workspaces` (git-ignored, one path per line); if it doesn't exist, ask the user. For each workspace whose `.claude/stack-skills.json` exists:
 
 1. Copy each listed skill to `<root>/<bucket>/.claude/skills/<name>/` — and to
    **every** bucket that lists it (one skill can serve two stacks).

@@ -1,13 +1,13 @@
 ---
 name: backend-dev
-description: Build, refactor or review backend code (HTTP APIs, Node/TypeScript services) with layered clean architecture and the Quero Delivery DDD rules — thin routers, rich entities holding the invariants, services that only orchestrate, repository-isolated persistence, OpenAPI contract as first barrier, named interfaces, standardized errors with pt-BR messages, fallbacks that don't swallow failures. Use when creating or reviewing an endpoint, entity, service or business-rule validation. Every task that changes runtime code ends with mandatory local verification against local MongoDB/Kafka/Redis, A/B against the base branch.
+description: Build, refactor or review backend code (HTTP APIs, Node/TypeScript services) with layered clean architecture and DDD rules — thin routers, rich entities holding the invariants, services that only orchestrate, repository-isolated persistence, OpenAPI contract as first barrier, named interfaces, standardized errors with pt-BR messages, fallbacks that don't swallow failures. Use when creating or reviewing an endpoint, entity, service or business-rule validation. Every task that changes runtime code ends with mandatory local verification against local MongoDB/Kafka/Redis, A/B against the base branch.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 argument-hint: "[endpoint, entity or rule to build, refactor or review]"
 ---
 
 # Backend Dev
 
-Builds and refactors backend apps toward a maintainable, testable structure. The layering principles are framework-agnostic; the domain rules are the Quero Delivery conventions (Node/TypeScript, `qd-packages`, OpenAPI, Mongo, Kafka). Adapt idioms to the project's conventions; never restyle working code to match the examples.
+Builds and refactors backend apps toward a maintainable, testable structure. The layering principles are framework-agnostic; the domain rules assume Node/TypeScript, OpenAPI, Mongo and Kafka. Organization-specific notes (shared packages and their quirks, internal libraries, error helpers) live in `local/`, which is git-ignored: read it when it exists. Adapt idioms to the project's conventions; never restyle working code to match the examples.
 
 ## When to Use
 - Scaffolding a new backend service or API endpoint
@@ -27,7 +27,7 @@ Builds and refactors backend apps toward a maintainable, testable structure. The
 - **The rule belongs to the entity** — invariants live in entity methods; the service loads, calls the entity and persists. A business `if` in a service is a candidate entity method.
 
 ## Workflow
-1. **Classify** — new service, endpoint, or refactor/review. Inspect existing structure first; match it.
+1. **Classify** — new service, endpoint, or refactor/review. Inspect existing structure first; match it. Read `local/` if present.
 2. **Apply layering** — each piece in its layer. Read `modules/layering.md`.
 3. **Apply the domain rules** — where each validation lives, rich entity, orchestrating service, OpenAPI contract, types and names, errors, reuse before helper, integration tests. Read `modules/domain-rules.md`.
 4. **Wire contracts & errors** — edge validation, error taxonomy, errors the client branches on. Read `modules/contracts-and-errors.md`.

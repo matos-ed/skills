@@ -10,19 +10,19 @@ Skip only when the change has no runtime effect (docs, CI config, comments). Say
 
 - **Nothing points at STG/PRD.** `dotenv` loads `./environments/.env` relative to the **cwd**. Run each build from its own directory with its own `environments/.env`, so the repo `.env` (STG values) is never read. Set every key the service reads (`src/configurations/env-constants.ts`).
 - **No copied data.** Copying STG/PRD documents is PII and gets denied. Seed synthetic documents only. Include at least one **legacy document inserted through the raw driver**, shaped like production data before the change.
-- **Third parties go to a local HTTP stub**: api-geral, data-enrichment, communication, places, Google, ViaCEP and similar.
+- **Third parties go to a local HTTP stub**: other internal services, Google, ViaCEP and similar.
   - Hosts that come from env vars: point the env var at the stub.
-  - Hosts hardcoded in the code: use `scripts/preload-rewrite.js` (`node -r`), which rewrites qd-packages `HttpClient` paths.
+  - Hosts hardcoded in the code: use `scripts/preload-rewrite.js` (`node -r`), which rewrites the paths of the shared HTTP client named by `HTTP_CLIENT_PACKAGE`.
   - The stub logs every call, so you can assert which integrations ran.
 
 ## Steps
 
 1. **Infra** — `scripts/local-infra.sh up` starts:
    - MongoDB **Atlas Local** on `27027`, which supports `$search`. Connect with `?directConnection=true`.
-   - Kafka on `19093` with **SASL_SSL** and SASL PLAIN user `local`/`local`. qd-packages hardcodes `ssl: true` + SASL PLAIN, so a plaintext broker does not work.
+   - Kafka on `19093` with **SASL_SSL** and SASL PLAIN user `local`/`local`. Kafka client libs that hardcode `ssl: true` + SASL PLAIN don't work with a plaintext broker.
    - Redis on `6390` with `WITH_REDIS=1`.
 
-   Then create every topic the service produces or consumes with `scripts/local-infra.sh topics T1 T2 …`. Find them by grepping `topic:`, `_TOPIC` and `QD-…`. qd-packages analytics writes to `RECORD_ANALYTICS_TOPIC`. Do not rely on auto-create.
+   Then create every topic the service produces or consumes with `scripts/local-infra.sh topics T1 T2 …`. Find them by grepping `topic:`, `_TOPIC` and the organization's topic prefix. Shared libraries may produce to topics of their own (see `local/`). Do not rely on auto-create.
 2. **Builds** — build the base in a worktree: `git worktree add --detach <dir>/base origin/stage`. When `package.json` and the lockfile are identical, symlink `node_modules`.
    - If the base moved since the branch was cut, test **what will land**, not the raw branch. Make a second worktree at `origin/stage` and run `git merge --no-commit origin/<branch>` there. Otherwise the diff mixes in changes other PRs already merged.
    - Otherwise build the branch in the repo with `yarn build`.
@@ -52,7 +52,7 @@ Skip only when the change has no runtime effect (docs, CI config, comments). Say
 
 ## Gotchas (seen in practice)
 
-- **The qd-packages 5.x consumer crashes on a message with a null key** (`messageBuffer.key.toString()`). The crash handler then SIGTERMs the whole process. With `isFromBeginning: true` and no committed offset, a restart re-reads the same message and crashes again. Recover with `kafka-consumer-groups.sh --reset-offsets --to-latest --topic <T> --execute`, using explicit topics (`--all-topics` ignores groups without commits).
+- **Some consumers crash on a message with a null key** (`messageBuffer.key.toString()`). The crash handler then SIGTERMs the whole process. With `isFromBeginning: true` and no committed offset, a restart re-reads the same message and crashes again. Recover with `kafka-consumer-groups.sh --reset-offsets --to-latest --topic <T> --execute`, using explicit topics (`--all-topics` ignores groups without commits).
 - `$search` fails on Community Mongo with "only allowed on MongoDB Atlas". Use Atlas Local.
 - `$match` filters after `$search` (step, city) can legitimately hide the documents your scenario created. Search for a seeded document that passes the filter.
 - Mongoose schema defaults only apply to documents created through the model. Many services write through the raw driver (`MongoRepository`) or `updateOne`, so a `default` does not reach the database. Assert on the stored document, not the schema.

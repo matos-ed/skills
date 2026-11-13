@@ -26,7 +26,7 @@ export function parse<T extends z.ZodTypeAny>(schema: T, data: unknown): z.infer
 
 Past this line, data is trusted and typed. Services receive validated inputs, never raw `req.body`.
 
-**QD services:** the edge validator is the OpenAPI contract (`express-openapi-validator`), not a hand-written `parse`. It rejects shape errors with 400 automatically; don't repeat those checks in the service. Contract conventions (`oneOf` + `discriminator`, English enums, `format: date`) are in `domain-rules.md`.
+**OpenAPI services:** the edge validator is the OpenAPI contract (`express-openapi-validator`), not a hand-written `parse`. It rejects shape errors with 400 automatically; don't repeat those checks in the service. Contract conventions (`oneOf` + `discriminator`, English enums, `format: date`) are in `domain-rules.md`.
 
 ## Serializers — never leak internals
 
@@ -93,9 +93,9 @@ export function errorHandler(err, _req, res, _next) {
 
 The response body is a **consistent envelope** (`{ error, code, details? }`) across every endpoint, so clients have one error contract to handle.
 
-**QD services:** the taxonomy and the central handler already come from `qd-packages` (`BusinessError` is 422, `GeneralError` 500; `middlewareHandleError`, registered by `validationAppCustomizer`, answers `{ message }`). Use them; don't write a second handler or a new envelope. Messages shown to the user are pt-BR.
+**Shared error package:** when the organization ships the taxonomy and the central handler in a shared package (see `local/`), use them; don't write a second handler or a new envelope, even if it answers a simpler shape like `{ message }`. Messages shown to the user are pt-BR.
 
-## Errors the client branches on (QD services)
+## Errors the client branches on
 
 When the front has to react differently to two failures of the same endpoint (skip a step, go back, show a specific screen), the error body carries a **boolean flag per case** beside the `message`. The client branches on the flag, never on the message text, which is pt-BR copy that changes.
 
@@ -104,8 +104,8 @@ When the front has to react differently to two failures of the same endpoint (sk
 { "message": "Informe o telefone do responsável antes de validar o número", "phoneMissing": true }
 ```
 
-- **Why a custom error:** the qd-packages `middlewareHandleError` (registered by `validationAppCustomizer`) sends only `{ message }`. Throw a `BusinessErrorWithData(message, { flag: true })` (same name as in qd-api-geral), and register a customizer that spreads `error.data` into the body **before** `validationAppCustomizer`, both in `server.ts` and in the test app (`__tests__/configApp.ts`). Every other error keeps the default handler.
+- **Why a custom error:** a shared handler that sends only `{ message }` drops the flag. Throw a `BusinessErrorWithData(message, { flag: true })` and register a handler that spreads `error.data` into the body **before** the default one, both in `server.ts` and in the test app. Every other error keeps the default handler. Package-specific wiring is in `local/`.
 - **Name the flag after the state** in camelCase (`phoneAlreadyValidated`, `phoneMissing`), so `if (body.phoneAlreadyValidated)` reads right.
 - **Declare it in the contract:** an explicit `'422'` response with its own schema, `additionalProperties: false` and every flag as an optional boolean. With `validateResponses: true`, an undeclared field fails the response.
-- **Test it:** the integration test asserts the whole body (`toEqual({ message, flag: true })`). Since the tests boot `configApp`, not `server.ts`, check the flag once against the real server in the local verification.
+- **Test it:** the integration test asserts the whole body (`toEqual({ message, flag: true })`). Since the tests boot the test app, not `server.ts`, check the flag once against the real server in the local verification.
 - A plain `BusinessError` stays fine when the client only shows the message and has nothing to branch on.

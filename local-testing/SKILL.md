@@ -1,6 +1,6 @@
 ---
 name: local-testing
-description: Teste local de qualquer projeto da Quero Delivery antes de dar uma melhoria por pronta — sobe a infra local reaproveitável (Mongo Atlas Local, Kafka SASL_SSL, Redis, MinIO como bucket S3), roda a branch e a base lado a lado com .env sintético, semeia dados, executa os cenários e compara A/B. Mantém um perfil por projeto (infra, tópicos, env, seed, cenários, armadilhas) que é lido e atualizado a cada execução. Use ao testar localmente um serviço backend, um frontend web ou um app mobile, ao preparar a verificação local de um PR, ou quando o usuário pedir "roda local", "testa o upload/endpoint localmente", "sobe o ambiente".
+description: Teste local de qualquer projeto (backend, web ou mobile) antes de dar uma melhoria por pronta — sobe a infra local reaproveitável (Mongo Atlas Local, Kafka SASL_SSL, Redis, MinIO como bucket S3), roda a branch e a base lado a lado com .env sintético, semeia dados, executa os cenários e compara A/B. Mantém um perfil por projeto (infra, tópicos, env, seed, cenários, armadilhas) que é lido e atualizado a cada execução. Use ao testar localmente um serviço backend, um frontend web ou um app mobile, ao preparar a verificação local de um PR, ou quando o usuário pedir "roda local", "testa o upload/endpoint localmente", "sobe o ambiente".
 argument-hint: "[repo ou caminho] [cenário]"
 ---
 
@@ -23,19 +23,22 @@ Toda melhoria termina com o projeto rodando localmente e o comportamento conferi
    - Perfil: `projects/<repo>/` (`profile.md`, `profile.env`, `env.template`, seeds, cenários).
    - Memória do Claude: no `MEMORY.md` do diretório de trabalho, procure linhas com o nome do repo, "local", "stub", "minikube" e "worktree", e leia essas memórias.
    - Sem perfil: crie seguindo `modules/profiles.md` antes de rodar.
+   - Notas da organização: se existir `local/`, leia os arquivos de lá (libs compartilhadas e suas armadilhas, serviços ainda sem perfil, apps).
 2. **Ler o código da base remota**, não o checkout local: `git fetch` e `git show origin/<padrão>:<arquivo>`.
 3. **Subir a infra** com `scripts/infra.sh up $INFRA`, depois `infra.sh topics $TOPICS` e `infra.sh bucket $BUCKET`. Os containers são reaproveitados entre execuções.
 4. **Subir branch e base** com `scripts/run.sh start <repo>`. Ele compila as duas versões, gera os `.env` sintéticos, sobe o stub de terceiros e espera o health.
 5. **Semear e executar.** Rode o seed do perfil e os cenários que a mudança toca, nas duas portas. Cenário novo que valha repetir vai para o perfil.
 6. **Comparar e reportar.** Monte uma tabela de chamada × status (branch vs base), as diferenças, o que foi simulado e o que ficou de fora. Use `scripts/ab-diff.js` em respostas grandes.
 7. **Desligar.** `run.sh stop <repo>` e `infra.sh stop`, que mantém os containers. Use `infra.sh down` só quando pedirem.
-8. **Atualizar a memória.** No `profile.md`: armadilhas novas, cenários, e uma linha no histórico (data, tarefa, resultado). Regra que vale para vários projetos vai para `modules/`. Fato fora do teste local vai para a memória do Claude.
+8. **Atualizar a memória.** No `profile.md`: armadilhas novas, cenários, e uma linha no histórico (data, tarefa, resultado). Regra genérica que vale para vários projetos vai para `modules/`; se ela citar serviço, lib ou app interno, vai para `local/`. Fato fora do teste local vai para a memória do Claude.
 
 ## Modules (Read When Relevant)
 
-- **Backend (Node + qd-packages): regras, infra, armadilhas** — `modules/backend.md`
+- **Backend (Node, Mongo, Kafka): regras, infra, armadilhas** — `modules/backend.md`
 - **Frontend web e mobile** — `modules/frontend-mobile.md`
 - **Formato do perfil e como criar um** — `modules/profiles.md`
+
+`projects/` e `local/` ficam só na máquina (ignorados pelo git): é onde vão os nomes de serviços, tópicos, variáveis e armadilhas de libs internas. O texto versionado da skill fica genérico.
 
 ## Scripts
 
